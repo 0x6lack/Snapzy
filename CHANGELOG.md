@@ -105,6 +105,89 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
 
+
+## [1.30.0] - 2026-07-25
+
+### Features
+-  Preserve hover tooltips in live capture via event-tap passthrough (#416) (c2e922e)
+-  Reduce freeze-screen area capture latency (#411) (b8b5062)
+-  Added dim non-selected area preference for recording (#270) (#402) (d70d9fc)
+-  Enhance area selection session management (c5f1e9d)
+-  Add support for Fn key shortcuts and accessibility hints (f5a1a93)
+-  Implement endpoint editing for arrows and lines; update selection affordances (22766cb)
+-  Add double-sided arrow in the mark-up (#368) (b299bad)
+-  Enhance arrow features with new styles, types, and bend directions; update rendering and testing (#363) (7be2e80)
+-  Introduce arrow types and integrate into annotation features (#363) (ff259de)
+-  Update arrow styles to curvedRight and curvedLeft, enhancing annotation flexibility (#363) (edf0975)
+-  Add configurable recording controls and menu bar indicators (#369) (d5cbc30)
+-  Enable cloud upload for Video/GIF in Video Editor (#360) (2dbb53d)
+-  Detect hyperlinks in OCR captured text and offer to open them (#347) (7103bed)
+-  Implement combine session persistence and save behavior (d0edfef)
+-  Add Google Drive Cloud service and configuration support (#358) (e96a20e)
+
+### Bug Fixes
+-  Optimized rendering and undo management for annotation properties and status items (#335) (4fb0eff)
+-  Fixed screenshot overlay drag cursor handling (#336) (b70f187)
+-  Fixed coordinate indicator behavior during selection and drag events (056b044)
+-  Fixed coordinate indicator handling during layout passes and re-renders (2bcbfd4)
+-  Restore markup on combined images and enhance text editing (#377) (62f4782)
+-  Fixed area capture hang on macOS 13 when Snapzy is excluded from screenshots (#385) (97832ca)
+-  Fixed pause offset handling in RecordingSession and update ScreenRecordingManager and tests (#322) (70f7f36)
+-  Modify scrolling capture to resolve scrolling capture fails on an external display (#374) (048389b)
+-  Update localization strings for various actions and add new entries (a88af01)
+- : polish Chinese localization (#367) (1ec80af)
+
+### Chore
+- chore: update appcast and docs for v1.30.0-beta.16 (716bfe4)
+- chore: bump version to v1.30.0-beta.16 (#420) (a51b5e6)
+- ci: bump actions off nodejs 20 (#417) (fc9172e)
+- chore: update appcast and docs for v1.30.0-beta.15 (26cb548)
+- chore: bump version to v1.30.0-beta.15 (#415) (bcda01f)
+- chore: add Zed task configuration for build and run (5a4b0f4)
+- docs: update docs version stamps (#404) (43cdfcc)
+- chore: update appcast for v1.30.0-beta.14 (3d7df1e)
+- chore: bump version to v1.30.0-beta.14 (#403) (8b26082)
+- chore: update appcast for v1.30.0-beta.13 (3737ec2)
+- chore: bump version to v1.30.0-beta.13 (#400) (732cbcc)
+- chore: bump version to v1.30.0-beta.13 (#397) (3651df2)
+- chore: update appcast for v1.30.0-beta.12 (8c7e639)
+- chore: bump version to v1.30.0-beta.12 (#395) (01287cb)
+- chore: update appcast for v1.30.0-beta.11 (e824615)
+- chore: bump version to v1.30.0-beta.11 (#394) (480502a)
+- chore: update appcast for v1.30.0-beta.10 (7a86f6b)
+- chore: bump version to v1.30.0-beta.10 (#393) (c7d60e5)
+- chore: update appcast for v1.30.0-beta.9 (4da02cc)
+- chore: bump version to v1.30.0-beta.9 (#392) (d194cd0)
+- chore: update appcast for v1.30.0-beta.8 (5526b1c)
+- chore: bump version to v1.30.0-beta.8 (#391) (ed8b49e)
+- refactor: Improve QuickAccessPanelController transitions and add tests for edge cases (b50463c)
+- chore: update appcast for v1.30.0-beta.7 (94d58ce)
+- chore: bump version to v1.30.0-beta.7 (#390) (b7041ba)
+- refactor: Eliminate canvas lag and color flicker with layer-composition rendering (#389) (abdf8ae)
+- perf: Eliminate Quick Access card reappear jank on annotate save-and-close (#388) (af5dcf7)
+- chore: update appcast for v1.30.0-beta.6 (7cf924b)
+- chore: bump version to v1.30.0-beta.6 (#387) (6389972)
+- chore: update appcast for v1.30.0-beta.5 (91e46d6)
+- chore: bump version to v1.30.0-beta.5 (#386) (c1afcf6)
+- docs: Add documentation for new features and updates (0fe3ca6)
+- refactor: Remove upload to cloud functionality and related configurations (dd4ccd5)
+- chore: update appcast for v1.30.0-beta.4 (45ff8cd)
+- chore: bump version to v1.30.0-beta.4 (#383) (108e902)
+- chore: update appcast for v1.30.0-beta.3 (4885f57)
+- chore: bump version to v1.30.0-beta.3 (#376) (d624083)
+- chore: update appcast for v1.30.0-beta.2 (486424c)
+- chore: bump version to v1.30.0-beta.2 (#370) (47978d1)
+- chore: update appcast for v1.30.0-beta.1 (abb2850)
+- chore: bump version to v1.30.0-beta.1 (#361) (d03b231)
+- chore: update appcast, cask, and readme for v1.29.1 (74fcc44)
+
+### Contributors
+- @duongductrong
+- @github-actions[bot]
+- @menmer0859
+- @motoish
+- @omarshahine
+
 ## [1.30.0-beta.16] - 2026-07-25
 
 ### Features
