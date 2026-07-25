@@ -4488,6 +4488,201 @@
         }
       }
     },
+    "preferences-capture.live-passthrough-description": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friert die Interaktion mit darunter liegenden Apps ein, damit sichtbare Tooltips und Hover-Zustände erfasst werden können. Erfordert die Bedienungshilfen-Berechtigung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freeze interaction with apps beneath so visible tooltips and hover states can be captured. Requires Accessibility permission."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Congela la interacción con las apps situadas debajo para capturar los tooltips y estados de hover visibles. Requiere el permiso de Accesibilidad."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fige l'interaction avec les apps situées dessous pour capturer les info-bulles et états de survol visibles. Nécessite l'autorisation Accessibilité."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下にあるAppとの操作を固定し、表示中のツールチップやホバー状態をそのままキャプチャできます。アクセシビリティ権限が必要です。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아래에 있는 앱과의 상호 작용을 고정하여 표시된 툴팁과 호버 상태를 그대로 캡처합니다. 손쉬운 사용 권한이 필요합니다."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Замораживает взаимодействие с приложениями под оверлеем, чтобы видимые подсказки и состояния наведения попали в снимок. Требуется разрешение «Универсальный доступ»."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đóng băng tương tác với các ứng dụng bên dưới để giữ nguyên tooltip và trạng thái hover đang hiển thị khi chụp. Yêu cầu quyền Trợ năng (Accessibility)."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冻结与下方 App 的交互，使已显示的工具提示和悬停状态保持可见并被截取。需要辅助功能权限。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "凍結與下方 App 的互動，讓已顯示的懸停提示與狀態保持可見並被擷取。需要輔助使用權限。"
+          }
+        }
+      }
+    },
+    "preferences-capture.live-passthrough-permission-hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Hover-Durchleitung benötigt die Bedienungshilfen-Berechtigung, um globale Maus- und Tastaturereignisse zu empfangen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hover passthrough needs Accessibility permission to observe global mouse and keyboard events."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El paso de hover necesita el permiso de Accesibilidad para observar los eventos globales de ratón y teclado."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La transmission du survol nécessite l'autorisation Accessibilité pour observer les événements globaux de souris et de clavier."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホバー透過には、グローバルなマウス・キーボードイベントを監視するためのアクセシビリティ権限が必要です。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "호버 통과는 전역 마우스 및 키보드 이벤트를 관찰하기 위해 손쉬운 사용 권한이 필요합니다."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для сквозного наведения требуется разрешение «Универсальный доступ» для отслеживания глобальных событий мыши и клавиатуры."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ hiệu ứng hover cần quyền Trợ năng (Accessibility) để theo dõi sự kiện chuột và bàn phím toàn hệ thống."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "悬停穿透需要辅助功能权限来监听全局鼠标和键盘事件。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "懸停穿透需要輔助使用權限來監聽全域滑鼠與鍵盤事件。"
+          }
+        }
+      }
+    },
+    "preferences-capture.live-passthrough-title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hover-Durchleitung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hover passthrough"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paso de hover"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transmission du survol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホバー透過"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "호버 통과"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сквозное наведение"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ hiệu ứng hover"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "悬停穿透"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "懸停穿透"
+          }
+        }
+      }
+    },
     "preferences-capture.microphone-description": {
       "extractionState": "stale",
       "localizations": {

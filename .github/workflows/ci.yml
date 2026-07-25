@@ -32,6 +32,8 @@ jobs:
 
       - name: Run tests
         env:
+          # The following tests crash on GitHub Actions macOS runners (Swift concurrency /
+          # headless CGS), so they are skipped in CI and run locally instead.
           SNAPZY_CI_SKIP_TESTS: |
             SnapzyTests/GoogleDriveTests
             SnapzyTests/DatabaseManagerTests
@@ -56,6 +58,8 @@ jobs:
             SnapzyTests/AreaSelectionMultiMonitorReconciliationTests/testMouseExited_hidesCoordinateIndicatorAndMagnifier
             SnapzyTests/AreaSelectionMultiMonitorReconciliationTests/testIsMouseOver_evaluatesFrameAndVisibility
             SnapzyTests/PersistedCombineSessionTests/testCaptureStitchSaveReopen_persistsStitchEverywhere
+            SnapzyTests/BackgroundCursorControlTests
+            SnapzyTests/LivePassthroughInputLogicTests
         run: |
           set -euo pipefail
           mkdir -p build

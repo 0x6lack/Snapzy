@@ -2583,6 +2583,21 @@ nonisolated enum L10n {
       defaultValue: "Freeze the screen while selecting. Enable to hold a still snapshot.",
       comment: "Capture preferences setting description"
     )
+    static let livePassthroughTitle = string(
+      "preferences-capture.live-passthrough-title",
+      defaultValue: "Hover passthrough",
+      comment: "Capture preferences setting title"
+    )
+    static let livePassthroughDescription = string(
+      "preferences-capture.live-passthrough-description",
+      defaultValue: "Freeze interaction with apps beneath so visible tooltips and hover states can be captured. Requires Accessibility permission.",
+      comment: "Capture preferences setting description"
+    )
+    static let livePassthroughPermissionHint = string(
+      "preferences-capture.live-passthrough-permission-hint",
+      defaultValue: "Hover passthrough needs Accessibility permission to observe global mouse and keyboard events.",
+      comment: "Capture preferences permission hint"
+    )
     static let recordingShowCursorDescription = string(
       "preferences-capture.recording-show-cursor-description",
       defaultValue: "Include mouse pointer in recorded videos and GIFs",

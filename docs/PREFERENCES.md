@@ -31,12 +31,12 @@ Segmented into three panes (`CaptureSettingsPane`): General / Screenshot / Recor
 - **General pane**:
   - App Windows: Include Snapzy windows in screenshots (`screenshot.includeOwnApp`) / in recordings (`recording.includeOwnApp`).
   - Desktop: Hide Desktop Icons (`hideDesktopIcons`), Hide Desktop Widgets (`hideDesktopWidgets`).
-  - Overlay: Show Selection Area Overlay (`screenshot.showSelectionAreaOverlay`).
+  - Overlay: Show Selection Area Overlay (`screenshot.showSelectionAreaOverlay`) — in live passthrough sessions the dim appears from capture start when this is on (already-visible hover UI stays alive but looks dimmed until the drag cutout).
   - Magnifier: Reverse Magnifier Zoom Direction (`screenshot.reverseMagnifierZoomDirection`).
   - Output Naming: screenshot/recording file-name templates (`screenshot.fileNameTemplate`, `recording.fileNameTemplate`) with token list + live preview + reset.
   - After Capture: action matrix (see below) + Auto-Crop Subject (`backgroundCutout.autoCropEnabled`).
 - **Screenshot pane**:
-  - Format: Show Cursor (`screenshot.showCursor`), Freeze Area (`screenshot.freezeArea`), Image Format (`screenshot.format`, `ImageFormatOption`; WebP shows a warning, JPEG a cutout note).
+  - Format: Show Cursor (`screenshot.showCursor`), Freeze Area (`screenshot.freezeArea`), Hover Passthrough (`screenshot.livePassthrough`, requires Accessibility), Image Format (`screenshot.format`, `ImageFormatOption`; WebP shows a warning, JPEG a cutout note).
   - Preset: default annotate canvas preset (`PreferencesScreenshotDefaultPresetPicker`).
   - Scrolling Capture: Show Session Hints (`scrollingCapture.showHints`) + info note.
   - OCR: Success Notification (`ocr.successNotificationEnabled`), Link Detection (`ocr.linkDetectionEnabled`).

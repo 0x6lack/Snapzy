@@ -36,6 +36,8 @@ struct CaptureSettingsView: View {
   @AppStorage(PreferencesKeys.screenshotIncludeOwnApp) private var includeOwnAppInScreenshots = false
   @AppStorage(PreferencesKeys.screenshotShowCursor) private var screenshotShowCursor = false
   @AppStorage(PreferencesKeys.screenshotFreezeArea) private var freezeAreaCapture = false
+  @AppStorage(PreferencesKeys.screenshotLivePassthrough) private var livePassthrough = true
+  @State private var livePassthroughAccessibilityGranted = AXIsProcessTrusted()
   @AppStorage(PreferencesKeys.screenshotShowSelectionAreaOverlay) private var showSelectionAreaOverlay = true
   @AppStorage(PreferencesKeys.screenshotReverseMagnifierZoomDirection) private var reverseMagnifierZoomDirection = false
 
@@ -208,6 +210,40 @@ struct CaptureSettingsView: View {
             ) {
               Toggle("", isOn: $freezeAreaCapture)
                 .labelsHidden()
+            }
+
+            SettingRow(
+              icon: "cursorarrow.rays",
+              title: L10n.PreferencesCapture.livePassthroughTitle,
+              description: L10n.PreferencesCapture.livePassthroughDescription
+            ) {
+              Toggle("", isOn: $livePassthrough)
+                .labelsHidden()
+            }
+
+            if livePassthrough, !livePassthroughAccessibilityGranted {
+              HStack(alignment: .top, spacing: 6) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                  .foregroundColor(.orange)
+                  .font(.system(size: 12))
+                  .padding(.top, 1)
+                Text(L10n.PreferencesCapture.livePassthroughPermissionHint)
+                  .font(.system(size: 11))
+                  .foregroundColor(.orange)
+                  .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+                Button(L10n.Common.openSettings) {
+                  if let url =
+                    URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                    NSWorkspace.shared.open(url)
+                  }
+                }
+                .controlSize(.small)
+              }
+              .padding(.vertical, 4)
+              .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                livePassthroughAccessibilityGranted = AXIsProcessTrusted()
+              }
             }
 
             SettingRow(
