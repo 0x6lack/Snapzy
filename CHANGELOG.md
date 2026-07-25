@@ -104,6 +104,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
 
+
+## [1.30.0-beta.16] - 2026-07-25
+
+### Features
+-  Preserve hover tooltips in live capture via event-tap passthrough (#416) (c2e922e)
+
+### Chore
+- ci: bump actions off nodejs 20 (#417) (fc9172e)
+- chore: update appcast and docs for v1.30.0-beta.15 (26cb548)
+
+### Contributors
+- @duongductrong
+- @github-actions[bot]
+- @motoish
+
 ## [1.30.0-beta.15] - 2026-07-23
 
 ### Features
