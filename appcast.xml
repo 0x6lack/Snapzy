@@ -6,6 +6,22 @@
     <description>Snapzy application updates</description>
     <language>en</language>
     <item>
+      <title>Version 1.30.0</title>
+      <sparkle:version>153</sparkle:version>
+      <sparkle:shortVersionString>1.30.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+      <pubDate>Sat, 25 Jul 2026 13:53:50 +0000</pubDate>
+      <description><![CDATA[
+        <style>:root { color-scheme: light dark; } body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.5; padding: 8px 16px; } h3 { font-size: 14px; margin: 12px 0 6px; } ul { padding-left: 20px; margin: 4px 0; } li { margin: 3px 0; }</style>
+        <h3>✨ Features</h3><ul><li>Preserve hover tooltips in live capture via event-tap passthrough</li><li>Reduce freeze-screen area capture latency</li><li>Added dim non-selected area preference for recording</li><li>Enhance area selection session management</li><li>Add support for Fn key shortcuts and accessibility hints</li><li>Implement endpoint editing for arrows and lines; update selection affordances</li><li>Add double-sided arrow in the mark-up</li><li>Enhance arrow features with new styles, types, and bend directions; update rendering and testing</li><li>Introduce arrow types and integrate into annotation features</li><li>Update arrow styles to curvedRight and curvedLeft, enhancing annotation flexibility</li><li>Add configurable recording controls and menu bar indicators</li><li>Enable cloud upload for Video/GIF in Video Editor</li><li>Detect hyperlinks in OCR captured text and offer to open them</li><li>Implement combine session persistence and save behavior</li><li>Add Google Drive Cloud service and configuration support</li></ul><h3>🐛 Bug Fixes</h3><ul><li>Optimized rendering and undo management for annotation properties and status items</li><li>Fixed screenshot overlay drag cursor handling</li><li>Fixed coordinate indicator behavior during selection and drag events</li><li>Fixed coordinate indicator handling during layout passes and re-renders</li><li>Restore markup on combined images and enhance text editing</li><li>Fixed area capture hang on macOS 13 when Snapzy is excluded from screenshots</li><li>Fixed pause offset handling in RecordingSession and update ScreenRecordingManager and tests</li><li>Modify scrolling capture to resolve scrolling capture fails on an external display</li><li>Update localization strings for various actions and add new entries</li><li>: polish Chinese localization</li></ul>
+      ]]></description>
+      <enclosure
+        url="https://github.com/duongductrong/Snapzy/releases/download/v1.30.0/Snapzy-v1.30.0.dmg"
+        sparkle:edSignature="9h/8XG7tBJe/R/rR2i/35r2HNgUK22vd0mE4mrjAd5xPiUwmqL313J7SdheMVZ3Lb1lD3o8Y5CT5RHXgm90uCg=="
+        length="47097744"
+        type="application/octet-stream"/>
+    </item>
+    <item>
       <title>Version 1.30.0-beta.16</title>
       <sparkle:channel>beta</sparkle:channel>
       <sparkle:version>152</sparkle:version>
