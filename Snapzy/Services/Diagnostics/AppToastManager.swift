@@ -92,49 +92,49 @@ enum AppToastVariant: Equatable {
   var textFontSize: CGFloat {
     switch self {
     case .regular: return 13
-    case .compact: return 10
+    case .compact: return 11
     }
   }
 
   var horizontalPadding: CGFloat {
     switch self {
     case .regular: return 16
-    case .compact: return 10
+    case .compact: return 12
     }
   }
 
   var verticalPadding: CGFloat {
     switch self {
-    case .regular: return 11
-    case .compact: return 6
+    case .regular: return 10
+    case .compact: return 7
     }
   }
 
   var contentSpacing: CGFloat {
     switch self {
     case .regular: return 10
-    case .compact: return 6
+    case .compact: return 7
     }
   }
 
   var minWidth: CGFloat {
     switch self {
-    case .regular: return 80
-    case .compact: return 60
+    case .regular: return 90
+    case .compact: return 64
     }
   }
 
   var minHeight: CGFloat {
     switch self {
-    case .regular: return 44
-    case .compact: return 28
+    case .regular: return 40
+    case .compact: return 30
     }
   }
 
   var cornerRadius: CGFloat {
     switch self {
-    case .regular: return 10
-    case .compact: return 8
+    case .regular: return 14
+    case .compact: return 10
     }
   }
 
@@ -148,14 +148,14 @@ enum AppToastVariant: Equatable {
   var textWeight: Font.Weight {
     switch self {
     case .regular: return .medium
-    case .compact: return .semibold
+    case .compact: return .medium
     }
   }
 
   var measurementWeight: NSFont.Weight {
     switch self {
     case .regular: return .medium
-    case .compact: return .semibold
+    case .compact: return .medium
     }
   }
 }
@@ -414,24 +414,22 @@ private struct AppToastView: View {
 
       Text(presentation.message)
         .font(.system(size: presentation.variant.textFontSize, weight: presentation.variant.textWeight))
-        .foregroundColor(Color(nsColor: presentation.style.textColor))
+        .foregroundColor(.primary)
         .lineLimit(presentation.variant.lineLimit)
         .multilineTextAlignment(.leading)
     }
     .padding(.horizontal, presentation.variant.horizontalPadding)
     .padding(.vertical, presentation.variant.verticalPadding)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(
-      RoundedRectangle(cornerRadius: presentation.variant.cornerRadius, style: .continuous)
-        .fill(Color(nsColor: presentation.style.backgroundColor))
-    )
+    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: presentation.variant.cornerRadius, style: .continuous))
     .overlay(
       RoundedRectangle(cornerRadius: presentation.variant.cornerRadius, style: .continuous)
-        .stroke(Color(nsColor: presentation.style.borderColor), lineWidth: 0.5)
+        .strokeBorder(Color.primary.opacity(0.12), lineWidth: 0.5)
     )
-    .scaleEffect(appeared ? 1.0 : 0.96)
+    .scaleEffect(appeared ? 1.0 : 0.95)
+    .opacity(appeared ? 1.0 : 0.0)
     .onAppear {
-      withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+      withAnimation(.spring(response: 0.28, dampingFraction: 0.8)) {
         appeared = true
       }
     }
