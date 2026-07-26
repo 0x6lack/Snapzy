@@ -332,10 +332,18 @@ final class RecordingToolbarWindow: NSWindow {
       return
     }
 
-    guard !isVisible else { return }
-
-    // Enable dragging in recording mode
+    // Enable dragging in recording mode. Must run before the already-visible early
+    // return below: the status-bar transition usually arrives here with this window
+    // still on screen from the pre-record toolbar, so the guard would otherwise skip
+    // it and the bar could never be dragged.
     isMovableByWindowBackground = true
+
+    guard !isVisible else {
+      // Window carried over from the pre-record toolbar: skip repositioning, but
+      // still arm drag persistence for the visible bar.
+      registerMovePersistenceObserver()
+      return
+    }
 
     // Restore a previously dragged position (clamped on-screen), else anchor below the selection.
     if let origin = persistedOrigin(), let size = cachedContentSize {
@@ -346,6 +354,11 @@ final class RecordingToolbarWindow: NSWindow {
     }
 
     // Persist future drags. Added after the initial placement so restore doesn't re-save.
+    registerMovePersistenceObserver()
+  }
+
+  /// Idempotently (re)registers the move observer that persists drag positions.
+  private func registerMovePersistenceObserver() {
     NotificationCenter.default.removeObserver(self, name: NSWindow.didMoveNotification, object: self)
     NotificationCenter.default.addObserver(
       self,

@@ -61,4 +61,18 @@ final class RecordingToolbarWindowTests: XCTestCase {
     XCTAssertEqual(result.x, union.minX, accuracy: 0.001)
     XCTAssertEqual(result.y, union.minY, accuracy: 0.001)
   }
+
+  /// Regression: the status-bar transition happens while the pre-record toolbar is
+  /// still on screen (`init` orders the window front). The already-visible early
+  /// return in `applyRecordingBarVisibility` must not skip enabling background
+  /// dragging, or the recording bar can never be dragged.
+  func testShowRecordingStatusBar_alreadyVisibleWindow_enablesBackgroundDragging() {
+    let window = RecordingToolbarWindow(anchorRect: CGRect(x: 100, y: 100, width: 400, height: 300))
+    XCTAssertTrue(window.isVisible, "pre-record toolbar should be on screen after init")
+
+    window.showRecordingStatusBar(recorder: ScreenRecordingManager.shared, visible: true)
+
+    XCTAssertTrue(window.isMovableByWindowBackground)
+    window.close()
+  }
 }
