@@ -65,6 +65,9 @@ protocol CaptureEventTapDelegate: AnyObject {
   /// Consumed events — underlying apps never see these.
   func eventTapDidReceiveButton(_ kind: CaptureButtonEvent, at screenPoint: CGPoint)
   func eventTapDidReceiveKey(_ key: CaptureKeyEvent)
+  /// Observation before consume — the wheel drives the magnifier zoom, then the
+  /// tap consumes the event so the content beneath does not shift mid-selection.
+  func eventTapDidReceiveScroll(deltaY: CGFloat, hasPreciseScrollingDeltas: Bool, isCommandDown: Bool)
 }
 
 /// System-touching seams behind injectable closures so the controller's state
@@ -293,10 +296,32 @@ final class CaptureEventTapController {
       return nil
 
     case .scrollWheel:
-      return Self.consumesScrollWheelEvents ? nil : Unmanaged.passUnretained(event)
+      guard Self.consumesScrollWheelEvents else {
+        return Unmanaged.passUnretained(event)
+      }
+      // Observe-then-consume (same contract as mouseMoved): the delegate drives
+      // the magnifier zoom from the wheel, but the event never reaches the app
+      // beneath — its content must not shift mid-selection.
+      delegate?.eventTapDidReceiveScroll(
+        deltaY: Self.scrollDeltaY(from: event),
+        hasPreciseScrollingDeltas: event.getIntegerValueField(.scrollWheelEventIsContinuous) != 0,
+        isCommandDown: event.flags.contains(.maskCommand)
+      )
+      return nil
 
     default:
       return Unmanaged.passUnretained(event)
     }
+  }
+
+  /// Wheel delta in the same units the legacy `NSEvent` path reports: precise
+  /// (continuous) devices yield point deltas like `NSEvent.scrollingDeltaY`,
+  /// otherwise whole-wheel notches like `NSEvent.deltaY` — so the magnifier's
+  /// zoom step matches the window-event path on both device kinds.
+  private static func scrollDeltaY(from event: CGEvent) -> CGFloat {
+    if event.getIntegerValueField(.scrollWheelEventIsContinuous) != 0 {
+      return CGFloat(event.getIntegerValueField(.scrollWheelEventPointDeltaAxis1))
+    }
+    return CGFloat(event.getIntegerValueField(.scrollWheelEventDeltaAxis1))
   }
 }

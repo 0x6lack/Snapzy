@@ -1864,6 +1864,19 @@ extension AreaSelectionController: CaptureEventTapDelegate {
       handleLivePassthroughKey(key)
     }
   }
+
+  nonisolated func eventTapDidReceiveScroll(deltaY: CGFloat, hasPreciseScrollingDeltas: Bool, isCommandDown: Bool) {
+    MainActor.assumeIsolated {
+      guard isPresenting, isLivePassthroughInputActive,
+            let quartzPoint = lastLivePassthroughPointerLocation else { return }
+      let screenPoint = appKitScreenPoint(fromQuartzGlobalPoint: quartzPoint)
+      window(containing: screenPoint)?.overlayView.handleLivePassthroughScroll(
+        deltaY: deltaY,
+        hasPreciseScrollingDeltas: hasPreciseScrollingDeltas,
+        isCommandDown: isCommandDown
+      )
+    }
+  }
 }
 
 // MARK: - AreaSelectionWindowDelegate Protocol
@@ -2780,13 +2793,28 @@ final class AreaSelectionOverlayView: NSView {
     if event.modifierFlags.contains(.command) {
       let delta = event.scrollingDeltaY != 0 ? event.scrollingDeltaY : event.deltaY
       if delta != 0 {
-        if magnifier.handleScroll(delta: delta, hasPreciseScrollingDeltas: event.hasPreciseScrollingDeltas) {
-          updateMagnifier(at: currentMousePosition)
-        }
+        applyMagnifierScroll(delta: delta, hasPreciseScrollingDeltas: event.hasPreciseScrollingDeltas)
       }
     } else {
       super.scrollWheel(with: event)
     }
+  }
+
+  /// Shared magnifier-zoom step for both input paths (window scroll events and
+  /// the live-passthrough event tap). Redraws at the tracked pointer position
+  /// when the zoom actually changed.
+  func applyMagnifierScroll(delta: CGFloat, hasPreciseScrollingDeltas: Bool) {
+    if magnifier.handleScroll(delta: delta, hasPreciseScrollingDeltas: hasPreciseScrollingDeltas) {
+      updateMagnifier(at: currentMousePosition)
+    }
+  }
+
+  /// Live-passthrough input: the event tap consumes scroll-wheel events before
+  /// they can become `NSEvent`s, so the controller forwards them here. Applies
+  /// the same ⌘ gate as `scrollWheel(with:)`.
+  func handleLivePassthroughScroll(deltaY: CGFloat, hasPreciseScrollingDeltas: Bool, isCommandDown: Bool) {
+    guard isCommandDown, deltaY != 0 else { return }
+    applyMagnifierScroll(delta: deltaY, hasPreciseScrollingDeltas: hasPreciseScrollingDeltas)
   }
 
   #if DEBUG
@@ -2828,9 +2856,7 @@ final class AreaSelectionOverlayView: NSView {
     ) {
       if modifierFlags.contains(.command) {
         if deltaY != 0 {
-          if magnifier.handleScroll(delta: deltaY, hasPreciseScrollingDeltas: hasPreciseScrollingDeltas) {
-            updateMagnifier(at: currentMousePosition)
-          }
+          applyMagnifierScroll(delta: deltaY, hasPreciseScrollingDeltas: hasPreciseScrollingDeltas)
         }
       }
     }

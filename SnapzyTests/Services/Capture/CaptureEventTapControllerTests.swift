@@ -15,6 +15,7 @@ final class CaptureEventTapControllerTests: XCTestCase {
     var movedPoints: [CGPoint] = []
     var buttonEvents: [(CaptureButtonEvent, CGPoint)] = []
     var keyEvents: [CaptureKeyEvent] = []
+    var scrollEvents: [(deltaY: CGFloat, hasPreciseScrollingDeltas: Bool, isCommandDown: Bool)] = []
 
     func eventTapDidObserveMouseMoved(at screenPoint: CGPoint) {
       movedPoints.append(screenPoint)
@@ -26,6 +27,10 @@ final class CaptureEventTapControllerTests: XCTestCase {
 
     func eventTapDidReceiveKey(_ key: CaptureKeyEvent) {
       keyEvents.append(key)
+    }
+
+    func eventTapDidReceiveScroll(deltaY: CGFloat, hasPreciseScrollingDeltas: Bool, isCommandDown: Bool) {
+      scrollEvents.append((deltaY, hasPreciseScrollingDeltas, isCommandDown))
     }
   }
 
@@ -223,6 +228,47 @@ final class CaptureEventTapControllerTests: XCTestCase {
     let result = controller.handleTapEvent(type: .scrollWheel, event: event)
 
     XCTAssertNil(result)
+  }
+
+  func testHandleTapEvent_scrollWheel_notifiesDelegateWithWheelNotchDelta() throws {
+    let event = try XCTUnwrap(CGEvent(
+      scrollWheelEvent2Source: nil,
+      units: .line,
+      wheelCount: 1,
+      wheel1: -1,
+      wheel2: 0,
+      wheel3: 0
+    ))
+
+    let result = controller.handleTapEvent(type: .scrollWheel, event: event)
+
+    XCTAssertNil(result, "scrollWheel stays consumed after observation")
+    XCTAssertEqual(delegate.scrollEvents.count, 1)
+    XCTAssertEqual(delegate.scrollEvents.first?.deltaY, -1)
+    XCTAssertEqual(delegate.scrollEvents.first?.hasPreciseScrollingDeltas, false)
+    XCTAssertEqual(delegate.scrollEvents.first?.isCommandDown, false)
+  }
+
+  func testHandleTapEvent_scrollWheel_preciseDeltaAndCommandFlag_areForwarded() throws {
+    let event = try XCTUnwrap(CGEvent(
+      scrollWheelEvent2Source: nil,
+      units: .pixel,
+      wheelCount: 1,
+      wheel1: 12,
+      wheel2: 0,
+      wheel3: 0
+    ))
+    event.setIntegerValueField(.scrollWheelEventIsContinuous, value: 1)
+    event.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 12)
+    event.flags = .maskCommand
+
+    let result = controller.handleTapEvent(type: .scrollWheel, event: event)
+
+    XCTAssertNil(result, "scrollWheel stays consumed after observation")
+    XCTAssertEqual(delegate.scrollEvents.count, 1)
+    XCTAssertEqual(delegate.scrollEvents.first?.deltaY, 12)
+    XCTAssertEqual(delegate.scrollEvents.first?.hasPreciseScrollingDeltas, true)
+    XCTAssertEqual(delegate.scrollEvents.first?.isCommandDown, true)
   }
 
   // MARK: - Tap Disabled Recovery
