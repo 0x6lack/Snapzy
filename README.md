@@ -25,6 +25,7 @@
   <p>
     <a href="#features">Features</a> •
     <a href="#install">Install</a> •
+    <a href="#raycast">Raycast</a> •
     <a href="#shortcuts">Shortcuts</a> •
     <a href="#development">Development</a> •
     <a href="#documentation">Documentation</a> •
@@ -43,6 +44,7 @@
   <p>
     <a href="https://deepwiki.com/duongductrong/Snapzy"><img alt="Ask DeepWiki" src="https://deepwiki.com/badge.svg" /></a>
     <a href="https://discord.gg/xkWDAuJkZu"><img alt="Join Discord Community" src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=flat&amp;logo=discord&amp;logoColor=white" /></a>
+    <a href="https://www.raycast.com/chk/snapzy"><img alt="Raycast Extension" src="https://img.shields.io/badge/Raycast-Extension-FF6363?style=flat&amp;logo=raycast&amp;logoColor=white" /></a>
     <a href="#featured-on"><img alt="Featured On" src="https://img.shields.io/badge/Featured%20On-Product%20Hunt%20%2B%20Unikorn-111827?style=flat&amp;logo=producthunt&amp;logoColor=white" /></a>
   </p>
   <p>
@@ -127,6 +129,12 @@ Or if you cloned the repo:
 ./reset-permissions.sh
 ```
 
+## Raycast
+
+Control Snapzy directly from Raycast using the official extension:
+
+<a href="https://www.raycast.com/chkzz/snapzy" title="Install snapzy Raycast Extension"><img src="https://www.raycast.com/chkzz/snapzy/install_button@2x.png?v=1.1" height="64" style="height: 64px;" alt="" /></a>
+
 ## Shortcuts
 
 | Action                                                  | Shortcut |
@@ -148,7 +156,7 @@ Or if you cloned the repo:
 
 ## Automation
 
-Snapzy registers the `snapzy://` URL scheme so launchers and automation tools can trigger capture actions. This integration can be toggled on or off under **Settings -> Advanced -> URL Scheme integration**.
+Snapzy registers the `snapzy://` URL scheme so launchers and automation tools (such as the [Raycast Extension](https://www.raycast.com/chk/snapzy), Alfred, or custom scripts) can trigger capture actions. This integration can be toggled on or off under **Settings -> Advanced -> URL Scheme integration**.
 
 | Action                | URL                               |
 | --------------------- | --------------------------------- |

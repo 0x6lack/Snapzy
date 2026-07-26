@@ -25,6 +25,7 @@
   <p>
     <a href="#features">Tính năng</a> •
     <a href="#install">Cài đặt</a> •
+    <a href="#raycast">Raycast</a> •
     <a href="#shortcuts">Phím tắt</a> •
     <a href="#automation">Tự động hóa</a> •
     <a href="#development">Development</a> •
@@ -44,6 +45,7 @@
   <p>
     <a href="https://deepwiki.com/duongductrong/Snapzy"><img alt="Hỏi DeepWiki" src="https://deepwiki.com/badge.svg" /></a>
     <a href="https://discord.gg/xkWDAuJkZu"><img alt="Tham gia cộng đồng Discord" src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=flat&amp;logo=discord&amp;logoColor=white" /></a>
+    <a href="https://www.raycast.com/chk/snapzy"><img alt="Extension Raycast" src="https://img.shields.io/badge/Raycast-Extension-FF6363?style=flat&amp;logo=raycast&amp;logoColor=white" /></a>
     <a href="#featured-on"><img alt="Được giới thiệu trên" src="https://img.shields.io/badge/Featured%20On-Product%20Hunt%20%2B%20Unikorn-111827?style=flat&amp;logo=producthunt&amp;logoColor=white" /></a>
   </p>
   <p>
@@ -137,6 +139,14 @@ Hoặc nếu bạn đã clone repo:
 ./reset-permissions.sh
 ```
 
+<a id="raycast"></a>
+
+## Raycast
+
+Điều khiển Snapzy trực tiếp từ Raycast với extension chính thức:
+
+<a href="https://www.raycast.com/chkzz/snapzy" title="Install snapzy Raycast Extension"><img src="https://www.raycast.com/chkzz/snapzy/install_button@2x.png?v=1.1" height="64" style="height: 64px;" alt="" /></a>
+
 <a id="shortcuts"></a>
 
 ## Phím tắt
@@ -161,7 +171,7 @@ Hoặc nếu bạn đã clone repo:
 
 ## Tự động hóa
 
-Snapzy đăng ký URL scheme `snapzy://` để launcher và công cụ tự động hóa có thể kích hoạt các thao tác capture. Tùy chọn tích hợp này có thể bật hoặc tắt dưới **Cài đặt -> Nâng cao -> Tích hợp URL Scheme**.
+Snapzy đăng ký URL scheme `snapzy://` để launcher và công cụ tự động hóa (như [Extension Raycast](https://www.raycast.com/chk/snapzy), Alfred, hoặc script tùy chỉnh) có thể kích hoạt các thao tác capture. Tùy chọn tích hợp này có thể bật hoặc tắt dưới **Cài đặt -> Nâng cao -> Tích hợp URL Scheme**.
 
 | Tác vụ                  | URL                               |
 | ----------------------- | --------------------------------- |
