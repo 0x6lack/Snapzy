@@ -7215,6 +7215,21 @@ nonisolated enum L10n {
         link
       )
     }
+    static let openAllLinks = string(
+      "ocr.open-all-links",
+      defaultValue: "Open All",
+      comment: "Button label to open all detected OCR links at once"
+    )
+    static let copyLink = string(
+      "ocr.copy-link",
+      defaultValue: "Copy link",
+      comment: "Tooltip for copying a detected web link"
+    )
+    static let linkCopiedToast = string(
+      "ocr.link-copied-toast",
+      defaultValue: "Link copied to clipboard",
+      comment: "Toast message shown when a detected link is copied to the clipboard"
+    )
   }
 
   enum GIF {

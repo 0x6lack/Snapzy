@@ -44,6 +44,13 @@ final class OCRLinkPromptManager {
         DiagnosticLogger.shared.log(.info, .ocr, "OCR link prompt opened link", context: ["host": url.host ?? ""])
         self?.dismiss(presentationID: presentationID)
       },
+      onOpenAll: { [weak self] in
+        for url in links {
+          NSWorkspace.shared.open(url)
+        }
+        DiagnosticLogger.shared.log(.info, .ocr, "OCR link prompt opened all links", context: ["count": "\(links.count)"])
+        self?.dismiss(presentationID: presentationID)
+      },
       onClose: { [weak self] in
         self?.dismiss(presentationID: presentationID)
       },
@@ -74,8 +81,8 @@ final class OCRLinkPromptManager {
     newPanel.isOpaque = false
     newPanel.backgroundColor = .clear
     newPanel.hasShadow = true
-    newPanel.hidesOnDeactivate = false
-    newPanel.ignoresMouseEvents = false
+    newPanel.isMovable = true
+    newPanel.isMovableByWindowBackground = true
     newPanel.becomesKeyOnlyIfNeeded = true
     newPanel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient]
     newPanel.contentView = hostingView
@@ -148,56 +155,123 @@ final class OCRLinkPromptManager {
 private struct OCRLinkPromptView: View {
   let links: [URL]
   let onOpen: (URL) -> Void
+  let onOpenAll: () -> Void
   let onClose: () -> Void
   let onHoverChange: (Bool) -> Void
 
+  @State private var appeared = false
+  @State private var isHoveringClose = false
+
   var body: some View {
-    HStack(alignment: .top, spacing: 10) {
-      Image(systemName: "link.circle.fill")
-        .font(.system(size: 15, weight: .semibold))
-        .foregroundStyle(
-          LinearGradient(
-            colors: [Color.blue, Color.cyan],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-          )
-        )
-        .frame(width: 23, height: 23)
+    VStack(alignment: .center, spacing: 6) {
+      // Drag Handle Pill
+      Capsule()
+        .fill(Color.primary.opacity(0.18))
+        .frame(width: 28, height: 3.5)
 
-      VStack(alignment: .leading, spacing: 6) {
-        Text(title)
-          .font(.system(size: 13, weight: .semibold))
-          .foregroundColor(Color(nsColor: AppToastStyle.info.textColor))
+      VStack(alignment: .leading, spacing: 10) {
+        // MARK: - Header
+        HStack(alignment: .center, spacing: 10) {
+          // Icon Badge
+          ZStack {
+            Circle()
+              .fill(
+                LinearGradient(
+                  colors: [Color.blue.opacity(0.2), Color.cyan.opacity(0.15)],
+                  startPoint: .topLeading,
+                  endPoint: .bottomTrailing
+                )
+              )
+            Image(systemName: "link")
+              .font(.system(size: 13, weight: .bold))
+              .foregroundStyle(
+                LinearGradient(
+                  colors: [Color.blue, Color.cyan],
+                  startPoint: .topLeading,
+                  endPoint: .bottomTrailing
+                )
+              )
+          }
+          .frame(width: 28, height: 28)
 
-        ForEach(links, id: \.absoluteString) { link in
-          OCRLinkRowButton(link: link) {
-            onOpen(link)
+          // Title & Subtitle
+          VStack(alignment: .leading, spacing: 1) {
+            Text(title)
+              .font(.system(size: 13, weight: .semibold))
+              .foregroundColor(.primary)
+
+            Text(subtitle)
+              .font(.system(size: 11, weight: .regular))
+              .foregroundColor(.secondary)
+              .lineLimit(1)
+          }
+
+          Spacer(minLength: 6)
+
+          // Open All button if multiple links
+          if links.count > 1 {
+            Button(action: onOpenAll) {
+              HStack(spacing: 4) {
+                Text(L10n.OCR.openAllLinks)
+                  .font(.system(size: 11, weight: .medium))
+                Image(systemName: "arrow.up.right")
+                  .font(.system(size: 9, weight: .bold))
+              }
+              .foregroundStyle(Color.accentColor)
+              .padding(.horizontal, 8)
+              .padding(.vertical, 4)
+              .background(
+                Capsule()
+                  .fill(Color.accentColor.opacity(0.12))
+              )
+            }
+            .buttonStyle(.plain)
+            .help(L10n.OCR.openAllLinks)
+          }
+
+          // Close button
+          Button(action: onClose) {
+            Image(systemName: "xmark")
+              .font(.system(size: 10, weight: .bold))
+              .foregroundColor(isHoveringClose ? .primary : .secondary)
+              .frame(width: 20, height: 20)
+              .background(
+                Circle()
+                  .fill(isHoveringClose ? Color.primary.opacity(0.1) : Color.clear)
+              )
+              .contentShape(Circle())
+          }
+          .buttonStyle(.plain)
+          .onHover { hovering in
+            isHoveringClose = hovering
+          }
+          .accessibilityLabel(L10n.Common.close)
+        }
+
+        // MARK: - Link Rows
+        VStack(spacing: 6) {
+          ForEach(links, id: \.absoluteString) { link in
+            OCRLinkRowCard(link: link, onOpen: { onOpen(link) })
           }
         }
       }
-      .frame(maxWidth: .infinity, alignment: .leading)
-
-      Button(action: onClose) {
-        Image(systemName: "xmark")
-          .font(.system(size: 10, weight: .bold))
-          .foregroundColor(Color(nsColor: AppToastStyle.info.textColor).opacity(0.55))
-          .frame(width: 20, height: 20)
-          .contentShape(Rectangle())
-      }
-      .buttonStyle(.plain)
-      .accessibilityLabel(L10n.Common.close)
     }
-    .padding(.horizontal, 16)
-    .padding(.vertical, 12)
+    .padding(.horizontal, 12)
+    .padding(.top, 8)
+    .padding(.bottom, 12)
     .frame(width: OCRLinkPromptManager.panelWidth, alignment: .leading)
-    .background(
-      RoundedRectangle(cornerRadius: 10, style: .continuous)
-        .fill(Color(nsColor: AppToastStyle.info.backgroundColor))
-    )
+    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     .overlay(
-      RoundedRectangle(cornerRadius: 10, style: .continuous)
-        .stroke(Color(nsColor: AppToastStyle.info.borderColor), lineWidth: 0.5)
+      RoundedRectangle(cornerRadius: 14, style: .continuous)
+        .strokeBorder(Color.primary.opacity(0.12), lineWidth: 0.5)
     )
+    .scaleEffect(appeared ? 1.0 : 0.96)
+    .opacity(appeared ? 1.0 : 0.0)
+    .onAppear {
+      withAnimation(.spring(response: 0.28, dampingFraction: 0.8)) {
+        appeared = true
+      }
+    }
     .onHover(perform: onHoverChange)
   }
 
@@ -206,40 +280,117 @@ private struct OCRLinkPromptView: View {
       ? L10n.OCR.linkDetectedTitle
       : L10n.OCR.linksDetectedTitle(links.count)
   }
+
+  private var subtitle: String {
+    if links.count == 1, let first = links.first {
+      return OCRLinkDetector.displayString(for: first)
+    }
+    return L10n.PreferencesCapture.ocrLinkDetectionDescription
+  }
 }
 
-private struct OCRLinkRowButton: View {
+private struct OCRLinkRowCard: View {
   let link: URL
-  let action: () -> Void
+  let onOpen: () -> Void
 
-  @State private var isHovering = false
+  @State private var isHoveringRow = false
+  @State private var isHoveringCopy = false
+  @State private var isHoveringOpen = false
+  @State private var isCopied = false
 
   var body: some View {
-    Button(action: action) {
-      HStack(spacing: 6) {
-        Text(OCRLinkDetector.displayString(for: link))
-          .font(.system(size: 12, weight: .medium))
-          .lineLimit(1)
-          .truncationMode(.middle)
+    HStack(spacing: 8) {
+      Image(systemName: "globe")
+        .font(.system(size: 11, weight: .medium))
+        .foregroundStyle(isHoveringRow ? Color.accentColor : Color.secondary)
 
-        Image(systemName: "arrow.up.right")
-          .font(.system(size: 9, weight: .bold))
-          .opacity(0.7)
+      Text(OCRLinkDetector.displayString(for: link))
+        .font(.system(size: 12, weight: .medium))
+        .foregroundColor(.primary)
+        .lineLimit(1)
+        .truncationMode(.middle)
+
+      Spacer(minLength: 4)
+
+      HStack(spacing: 4) {
+        // Copy Button
+        Button {
+          NSPasteboard.general.clearContents()
+          NSPasteboard.general.setString(link.absoluteString, forType: .string)
+          withAnimation(.easeInOut(duration: 0.15)) {
+            isCopied = true
+          }
+          AppToastManager.shared.show(
+            message: L10n.OCR.linkCopiedToast,
+            style: .success,
+            position: .bottomCenter,
+            duration: 1.5,
+            variant: .compact
+          )
+          Task {
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            await MainActor.run {
+              withAnimation(.easeInOut(duration: 0.15)) {
+                isCopied = false
+              }
+            }
+          }
+        } label: {
+          Image(systemName: isCopied ? "checkmark" : "doc.on.doc")
+            .font(.system(size: 10, weight: .semibold))
+            .foregroundColor(isCopied ? .green : (isHoveringCopy ? .primary : .secondary))
+            .frame(width: 22, height: 22)
+            .background(
+              RoundedRectangle(cornerRadius: 5, style: .continuous)
+                .fill(isHoveringCopy ? Color.primary.opacity(0.1) : Color.clear)
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+          isHoveringCopy = hovering
+        }
+        .help(L10n.OCR.copyLink)
+
+        // Open Button
+        Button(action: onOpen) {
+          HStack(spacing: 3) {
+            Text(L10n.Common.open)
+              .font(.system(size: 11, weight: .medium))
+            Image(systemName: "arrow.up.right")
+              .font(.system(size: 9, weight: .bold))
+          }
+          .foregroundColor(isHoveringOpen ? .white : Color.primary.opacity(0.85))
+          .padding(.horizontal, 7)
+          .padding(.vertical, 3.5)
+          .background(
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+              .fill(isHoveringOpen ? Color.accentColor : Color.primary.opacity(0.08))
+          )
+          .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+          isHoveringOpen = hovering
+        }
+        .help(L10n.OCR.openLinkAccessibility(link.absoluteString))
       }
-      .foregroundColor(isHovering ? Color.cyan : Color(nsColor: AppToastStyle.info.textColor).opacity(0.85))
-      .padding(.horizontal, 8)
-      .padding(.vertical, 4)
-      .background(
-        RoundedRectangle(cornerRadius: 6, style: .continuous)
-          .fill(Color(nsColor: AppToastStyle.info.textColor).opacity(isHovering ? 0.14 : 0.07))
-      )
-      .contentShape(Rectangle())
     }
-    .buttonStyle(.plain)
+    .padding(.horizontal, 10)
+    .padding(.vertical, 6)
+    .background(
+      RoundedRectangle(cornerRadius: 8, style: .continuous)
+        .fill(isHoveringRow ? Color.primary.opacity(0.06) : Color.primary.opacity(0.03))
+    )
+    .overlay(
+      RoundedRectangle(cornerRadius: 8, style: .continuous)
+        .strokeBorder(isHoveringRow ? Color.accentColor.opacity(0.25) : Color.clear, lineWidth: 0.5)
+    )
+    .contentShape(Rectangle())
     .onHover { hovering in
-      isHovering = hovering
+      withAnimation(.easeInOut(duration: 0.12)) {
+        isHoveringRow = hovering
+      }
     }
-    .help(link.absoluteString)
-    .accessibilityLabel(L10n.OCR.openLinkAccessibility(link.absoluteString))
   }
 }
