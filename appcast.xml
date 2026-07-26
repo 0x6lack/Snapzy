@@ -6,6 +6,22 @@
     <description>Snapzy application updates</description>
     <language>en</language>
     <item>
+      <title>Version 1.30.1</title>
+      <sparkle:version>154</sparkle:version>
+      <sparkle:shortVersionString>1.30.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+      <pubDate>Sun, 26 Jul 2026 16:25:19 +0000</pubDate>
+      <description><![CDATA[
+        <style>:root { color-scheme: light dark; } body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.5; padding: 8px 16px; } h3 { font-size: 14px; margin: 12px 0 6px; } ul { padding-left: 20px; margin: 4px 0; } li { margin: 3px 0; }</style>
+        <h3>✨ Features</h3><ul><li>add scroll wheel magnifier zoom in live passthrough mode</li><li>polish detected links floating prompt with native macOS material UI, copy actions, and window dragging</li></ul><h3>🐛 Bug Fixes</h3><ul><li>enable window drag and position persistence for visible toolbar</li><li>add missing OCR link localization entries to Capture.xcstrings</li></ul>
+      ]]></description>
+      <enclosure
+        url="https://github.com/duongductrong/Snapzy/releases/download/v1.30.1/Snapzy-v1.30.1.dmg"
+        sparkle:edSignature="jOL52xaWmfRQHmngWz1di3c/cQK99FMf1GT3qevQr7K9XpPtHvF9EIrRvqODHVJQFLdknDWvJ799EmUtv7k8DA=="
+        length="47161575"
+        type="application/octet-stream"/>
+    </item>
+    <item>
       <title>Version 1.30.0</title>
       <sparkle:version>153</sparkle:version>
       <sparkle:shortVersionString>1.30.0</sparkle:shortVersionString>
