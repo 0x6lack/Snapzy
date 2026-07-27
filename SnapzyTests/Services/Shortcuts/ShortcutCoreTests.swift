@@ -25,11 +25,18 @@ final class ShortcutCoreTests: XCTestCase {
     XCTAssertEqual(ShortcutConfig.defaultCloudUploads.keyCode, UInt32(kVK_ANSI_L))
     XCTAssertEqual(ShortcutConfig.defaultShortcutList.keyCode, UInt32(kVK_ANSI_K))
     XCTAssertEqual(ShortcutConfig.defaultHistory.keyCode, UInt32(kVK_ANSI_H))
+    XCTAssertEqual(ShortcutConfig.defaultPinClipboard.keyCode, UInt32(kVK_ANSI_V))
 
     let expectedModifiers = UInt32(cmdKey | shiftKey)
     XCTAssertEqual(ShortcutConfig.defaultFullscreen.modifiers, expectedModifiers)
     XCTAssertEqual(ShortcutConfig.defaultAreaAnnotate.modifiers, expectedModifiers)
     XCTAssertEqual(ShortcutConfig.defaultHistory.modifiers, expectedModifiers)
+    XCTAssertEqual(ShortcutConfig.defaultPinClipboard.modifiers, expectedModifiers)
+  }
+
+  func testPinClipboardKind_isRegisteredWithConfigKey() {
+    XCTAssertTrue(GlobalShortcutKind.allCases.contains(.pinClipboard))
+    XCTAssertEqual(GlobalShortcutKind.pinClipboard.configKey, "pin_clipboard")
   }
 
   func testShortcutConfigKeyCodeToString_mapsPrintableAndSpecialKeys() {

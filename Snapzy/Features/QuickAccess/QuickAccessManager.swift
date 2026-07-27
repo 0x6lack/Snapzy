@@ -637,6 +637,31 @@ final class QuickAccessManager: ObservableObject {
     return item
   }
 
+  /// Pin the latest clipboard content (image or text rendered as image) as a floating window.
+  func pinClipboard() {
+    guard let content = ClipboardPinContentProvider.read() else {
+      NSSound.beep()
+      DiagnosticLogger.shared.log(.info, .action, "Pin clipboard skipped; no supported clipboard content")
+      return
+    }
+
+    let image: NSImage?
+    switch content {
+    case .image(let clipboardImage):
+      image = clipboardImage
+    case .text(let text):
+      image = ClipboardTextImageRenderer.render(text)
+    }
+
+    guard let image, let url = ClipboardPinContentProvider.writeTempPNG(image) else {
+      NSSound.beep()
+      DiagnosticLogger.shared.log(.warning, .action, "Pin clipboard failed; could not prepare image")
+      return
+    }
+
+    Task { await pinScreenshot(url: url) }
+  }
+
   func setWindowOpen(id: UUID, isOpen: Bool) {
     if let index = items.firstIndex(where: { $0.id == id }) {
       PerfSignpost.event("setWindowOpenCommit")

@@ -113,6 +113,12 @@ struct ShortcutConfig: Equatable, Codable {
     modifiers: UInt32(cmdKey | shiftKey)
   )
 
+  /// Cmd + Shift + V
+  static let defaultPinClipboard = ShortcutConfig(
+    keyCode: UInt32(kVK_ANSI_V),
+    modifiers: UInt32(cmdKey | shiftKey)
+  )
+
   var displayString: String {
     var parts: [String] = []
 
@@ -481,6 +487,7 @@ enum GlobalShortcutKind: String, CaseIterable, Codable {
   case smartElement
   case objectCutout
   case history
+  case pinClipboard
 
   var isSystemConflictRelevant: Bool {
     switch self {
@@ -531,6 +538,8 @@ extension GlobalShortcutKind {
       return L10n.Actions.captureSubject
     case .history:
       return L10n.Actions.openHistory
+    case .pinClipboard:
+      return L10n.Actions.pinClipboard
     }
   }
 }
@@ -557,6 +566,7 @@ enum ShortcutAction {
   case openCloudUploads
   case openShortcutList
   case openHistory
+  case pinClipboard
 }
 
 /// Protocol for handling shortcut events
@@ -590,6 +600,7 @@ final class KeyboardShortcutManager {
   private(set) var smartElementShortcut: ShortcutConfig
   private(set) var objectCutoutShortcut: ShortcutConfig
   private(set) var historyShortcut: ShortcutConfig
+  private(set) var pinClipboardShortcut: ShortcutConfig
   private(set) var activeWindowShortcut: ShortcutConfig
   private(set) var togglePenRecordingShortcut: ShortcutConfig
   private(set) var restartRecordingShortcut: ShortcutConfig
@@ -615,6 +626,7 @@ final class KeyboardShortcutManager {
   private var smartElementHotkeyRef: EventHotKeyRef?
   private var objectCutoutHotkeyRef: EventHotKeyRef?
   private var historyHotkeyRef: EventHotKeyRef?
+  private var pinClipboardHotkeyRef: EventHotKeyRef?
   private var activeWindowHotkeyRef: EventHotKeyRef?
   private var togglePenRecordingHotkeyRef: EventHotKeyRef?
   private var restartRecordingHotkeyRef: EventHotKeyRef?
@@ -647,6 +659,7 @@ final class KeyboardShortcutManager {
   private let togglePenRecordingHotkeyID = EventHotKeyID(signature: OSType(0x5A53_4649), id: 18)  // "ZSFI"
   private let restartRecordingHotkeyID = EventHotKeyID(signature: OSType(0x5A53_464A), id: 19)    // "ZSFJ"
   private let deleteRecordingHotkeyID = EventHotKeyID(signature: OSType(0x5A53_464B), id: 20)     // "ZSFK"
+  private let pinClipboardHotkeyID = EventHotKeyID(signature: OSType(0x5A53_464C), id: 21)  // "ZSFL"
 
   private var eventHandler: EventHandlerRef?
 
@@ -665,6 +678,7 @@ final class KeyboardShortcutManager {
   private let smartElementShortcutKey = PreferencesKeys.smartElementShortcut
   private let objectCutoutShortcutKey = "objectCutoutShortcut"
   private let historyShortcutKey = "historyShortcut"
+  private let pinClipboardShortcutKey = "pinClipboardShortcut"
   private let activeWindowShortcutKey = "activeWindowShortcut"
   private let togglePenRecordingShortcutKey = "togglePenRecordingShortcut"
   private let restartRecordingShortcutKey = "restartRecordingShortcut"
@@ -688,6 +702,7 @@ final class KeyboardShortcutManager {
     smartElementShortcut = .defaultSmartElement
     objectCutoutShortcut = .defaultObjectCutout
     historyShortcut = .defaultHistory
+    pinClipboardShortcut = .defaultPinClipboard
     activeWindowShortcut = .defaultActiveWindowCapture
     togglePenRecordingShortcut = ShortcutConfig(keyCode: 0, modifiers: 0)
     restartRecordingShortcut = ShortcutConfig(keyCode: 0, modifiers: 0)
@@ -785,6 +800,7 @@ final class KeyboardShortcutManager {
     case .smartElement: return smartElementShortcut
     case .objectCutout: return objectCutoutShortcut
     case .history: return historyShortcut
+    case .pinClipboard: return pinClipboardShortcut
     }
   }
 
@@ -1002,6 +1018,17 @@ final class KeyboardShortcutManager {
     }
   }
 
+  /// Update pin clipboard shortcut
+  func setPinClipboardShortcut(_ config: ShortcutConfig?) {
+    mutateShortcutRegistration {
+      setShortcut(config, for: .pinClipboard) {
+        pinClipboardShortcut = $0
+      }
+      saveShortcuts()
+      saveClearedShortcuts()
+    }
+  }
+
   private func setShortcut(
     _ config: ShortcutConfig?,
     for kind: GlobalShortcutKind,
@@ -1080,6 +1107,9 @@ final class KeyboardShortcutManager {
     }
     if let historyData = try? encoder.encode(historyShortcut) {
       UserDefaults.standard.set(historyData, forKey: historyShortcutKey)
+    }
+    if let pinClipboardData = try? encoder.encode(pinClipboardShortcut) {
+      UserDefaults.standard.set(pinClipboardData, forKey: pinClipboardShortcutKey)
     }
   }
 
@@ -1169,6 +1199,11 @@ final class KeyboardShortcutManager {
       let config = try? decoder.decode(ShortcutConfig.self, from: historyData)
     {
       historyShortcut = config
+    }
+    if let pinClipboardData = UserDefaults.standard.data(forKey: pinClipboardShortcutKey),
+      let config = try? decoder.decode(ShortcutConfig.self, from: pinClipboardData)
+    {
+      pinClipboardShortcut = config
     }
     if let activeWindowData = UserDefaults.standard.data(forKey: activeWindowShortcutKey),
       let config = try? decoder.decode(ShortcutConfig.self, from: activeWindowData)
@@ -1342,6 +1377,9 @@ final class KeyboardShortcutManager {
     case historyHotkeyID.id:
       actionName = "history"
       action = .openHistory
+    case pinClipboardHotkeyID.id:
+      actionName = "pin-clipboard"
+      action = .pinClipboard
     default:
       return
     }
@@ -1480,6 +1518,12 @@ final class KeyboardShortcutManager {
       config: shortcut(for: .history),
       hotkeyID: historyHotkeyID,
       ref: &historyHotkeyRef
+    )
+    registerShortcutIfNeeded(
+      kind: .pinClipboard,
+      config: shortcut(for: .pinClipboard),
+      hotkeyID: pinClipboardHotkeyID,
+      ref: &pinClipboardHotkeyRef
     )
   }
 
@@ -1691,6 +1735,10 @@ final class KeyboardShortcutManager {
     if let ref = historyHotkeyRef {
       UnregisterEventHotKey(ref)
       historyHotkeyRef = nil
+    }
+    if let ref = pinClipboardHotkeyRef {
+      UnregisterEventHotKey(ref)
+      pinClipboardHotkeyRef = nil
     }
   }
 

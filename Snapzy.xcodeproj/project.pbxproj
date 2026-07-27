@@ -32,7 +32,6 @@
 		A3A629C62F5E9E4E00E06B7C /* Exceptions for "Snapzy" folder in "Snapzy" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Config/Secrets.xcconfig,
 				Resources/Info.plist,
 				Resources/Localization/Generated/README.md,
 				Resources/Localization/README.md,
@@ -393,6 +392,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Snapzy/Snapzy.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 154;

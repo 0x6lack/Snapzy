@@ -59,6 +59,13 @@ Customization: `QuickAccessActionConfigurationStore` — context-menu order (`qu
 - Drag-out handle (`QuickAccessPinDragHandleView`) re-exports the current rendered image to `Captures/PinDrags/` — saved edits included even while file write is in flight.
 - Closing unpins the QA item and restarts its countdown. Transient `pinScreenshot(url:)` supports pinning arbitrary files.
 
+## Pin Clipboard
+
+- `QuickAccessManager.pinClipboard()` — pins the latest clipboard content as a floating pin window without a capture. Triggers: global shortcut (default ⌘⇧V, configurable in Settings → Shortcuts) or menu bar → Pin Clipboard.
+- Content priority (`ClipboardPinContentProvider`): images first (raw PNG/TIFF/JPEG/GIF/BMP/HEIC/WebP data, then `NSImage` fallback); otherwise plain text, trimmed and truncated at 50,000 characters, rendered as a 2x image by `ClipboardTextImageRenderer` (fixed light background, canvas ≤ 1600×2000 pt).
+- The image is materialized as a temp PNG in `TempCaptureManager.tempCaptureDirectory` and opened as a transient pin window (no Quick Access card, no history record); orphaned temp files are cleaned up on next launch.
+- Unsupported/empty clipboard → beep, no window. TOML shortcut key: `shortcuts.global.pin_clipboard`.
+
 ## Flow In
 
 ```mermaid
