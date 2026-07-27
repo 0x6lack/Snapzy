@@ -18,7 +18,7 @@ flowchart TD
     F --> G["dispatch to capture / record / open actions"]
 ```
 
-- Engine: `KeyboardShortcutManager.shared` (`Snapzy/Services/Shortcuts/KeyboardShortcutManager.swift`) — Carbon `RegisterEventHotKey` / `UnregisterEventHotKey`; hotkey IDs use signatures `ZSF1`…`ZSFK` (`0x5A53_46xx`).
+- Engine: `KeyboardShortcutManager.shared` (`Snapzy/Services/Shortcuts/KeyboardShortcutManager.swift`) — Carbon `RegisterEventHotKey` / `UnregisterEventHotKey`; hotkey IDs use signatures `ZSF1`…`ZSFL` (`0x5A53_46xx`).
 - Config model: `ShortcutConfig { keyCode: UInt32, modifiers: UInt32 }` (Carbon modifiers), persisted as JSON in UserDefaults under per-shortcut keys (`fullscreenShortcut`, `areaShortcut`, `recordingShortcut`, …).
 - Fn modifier: custom bit `ShortcutConfig.functionCarbonModifier = 0x2000`. Carbon `RegisterEventHotKey` cannot express Fn, so Fn-containing configs are **not** Carbon-registered — they are collected into `fnBindings` and dispatched via global+local `NSEvent` keyDown monitors (`updateFnMonitors()` / `handleFnKeyDown`), matched exactly (keyCode + full modifier set incl. Fn) by `ShortcutConfig.matches(event:)`. Fn-only combos (e.g. `fn+F3`) and Fn+modifier combos (e.g. `fn+⌘+F3`) both fire; the non-Fn sibling combo is never hijacked.
   - Requires Accessibility permission (global key monitors silently deliver nothing without it) — the Shortcuts settings tab shows a hint row when an Fn binding exists but `AXIsProcessTrusted()` is false (`KeyboardShortcutManager.hasFnBoundShortcuts`).
@@ -32,7 +32,7 @@ flowchart TD
 
 ## Global shortcut table
 
-All 18 `GlobalShortcutKind`s with shipping defaults (verified in `KeyboardShortcutManager.swift`):
+All 19 `GlobalShortcutKind`s with shipping defaults (verified in `KeyboardShortcutManager.swift`):
 
 | Kind | Action | Default |
 | --- | --- | --- |
@@ -50,6 +50,7 @@ All 18 `GlobalShortcutKind`s with shipping defaults (verified in `KeyboardShortc
 | `cloudUploads` | Cloud Uploads window | ⌘⇧L |
 | `shortcutList` | Shortcut cheat sheet overlay | ⌘⇧K |
 | `history` | History panel toggle | ⌘⇧H |
+| `pinClipboard` | Pin Clipboard (pin latest clipboard content) | ⌘⇧V |
 | `pauseResumeRecording` | Pause/Resume recording | **unbound** (recommended ⌘⇧Space) |
 | `togglePenRecording` | Toggle pen overlay while recording | **unbound** |
 | `restartRecording` | Restart current recording | **unbound** |
@@ -72,6 +73,15 @@ All 18 `GlobalShortcutKind`s with shipping defaults (verified in `KeyboardShortc
 - `recording` shortcut is a start/stop toggle: `toggleRecordingFromShortcut` stops the active recording (`RecordingCoordinator.stopFromStatusItem()`) or starts the recording flow otherwise.
 - `pauseResumeRecording` no-ops unless a recording is active (`state.isPauseResumeEligible` guard, logged when ignored).
 - `togglePenRecording` no-ops unless `RecordingCoordinator.shared.isActive`.
+
+## Pin Clipboard
+
+- Triggers: `pinClipboard` global shortcut (default ⌘⇧V, remappable in Settings → Shortcuts) or menu bar → Pin Clipboard.
+- Content resolution (`ClipboardPinContentProvider.read()`): images win over text. Raw image data on the first pasteboard item is tried first (PNG, TIFF, JPEG, GIF, BMP, HEIC, WebP), then an `NSImage` `readObjects` fallback; otherwise trimmed plain text is used, truncated at 50,000 characters (`maxTextLength`).
+- Text is rendered into a Retina (2x) image by `ClipboardTextImageRenderer` — fixed light background, canvas capped at 1600×2000 pt.
+- The resulting image is written as a temp PNG into `TempCaptureManager.tempCaptureDirectory` and pinned via the Quick Access pin window (`QuickAccessManager.pinClipboard()`); orphaned temp files are cleaned up on next launch.
+- No decodable image and no non-empty text → beep, nothing opens.
+- TOML key: `shortcuts.global.pin_clipboard` (see [CONFIGURATION.md](CONFIGURATION.md)).
 
 ## Annotate editor shortcuts
 

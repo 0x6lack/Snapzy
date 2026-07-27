@@ -16,3 +16,5 @@ Snapzy/Config/Secrets.xcconfig
 /plans
 
 .codex
+# Qoder IDE
+.qoder/
