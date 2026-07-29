@@ -12,7 +12,7 @@ sparkle_private_key.pem
 # Secrets - never commit
 Snapzy/Config/Secrets.xcconfig
 *.xcuserstate
-
+/.qoder
 /plans
 
 .codex

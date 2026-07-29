@@ -75,6 +75,7 @@ private final class QuickAccessPinWindowController {
   private var targetZoomFactor: CGFloat = 1
   private var zoomTimer: Timer?
   private var zoomCenter: CGPoint?
+  private var ocrTask: Task<Void, Never>?
 
   init(item: QuickAccessItem) {
     id = item.id
@@ -100,6 +101,7 @@ private final class QuickAccessPinWindowController {
     window.onZoomStepRequested = { [weak self] step in
       self?.handleZoomStep(step)
     }
+    startOCRTask()
   }
 
   func show() {
@@ -126,9 +128,12 @@ private final class QuickAccessPinWindowController {
     )
     targetZoomFactor = state.zoomFactor
     resize(to: newSize, animated: false)
+    startOCRTask()
   }
 
   func close() {
+    ocrTask?.cancel()
+    ocrTask = nil
     stopZoomAnimationLoop()
     window.close()
   }
@@ -158,8 +163,65 @@ private final class QuickAccessPinWindowController {
     hostingView.onMagnify = { [weak self] magnification in
       self?.window.requestMagnifyZoom(magnification: magnification)
     }
+    hostingView.menuProvider = { [weak self] in
+      guard let self else { return nil }
+      let entries = QuickAccessPinContextMenuBuilder.makeEntries(
+        ocrText: self.state.ocrText,
+        onCopyImage: { [weak self] in self?.handleCopyImage() },
+        onCopyText: { [weak self] in self?.handleCopyText() }
+      )
+      return QuickAccessPinContextMenuBuilder.makeNSMenu(entries: entries)
+    }
     hostingView.frame = NSRect(origin: .zero, size: size)
     return hostingView
+  }
+
+  private func handleCopyImage() {
+    if FileManager.default.fileExists(atPath: state.url.path) {
+      ClipboardHelper.copyImage(from: state.url)
+    } else {
+      ClipboardHelper.copyImage(state.image)
+    }
+    SoundManager.play("Pop")
+  }
+
+  private func handleCopyText() {
+    guard let text = state.ocrText,
+          !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+    let pasteboard = NSPasteboard.general
+    pasteboard.clearContents()
+    pasteboard.setString(text, forType: .string)
+    SoundManager.play("Pop")
+    DiagnosticLogger.shared.log(
+      .info,
+      .clipboard,
+      "Pin window copied OCR text",
+      context: ["chars": "\(text.count)"]
+    )
+  }
+
+  private func startOCRTask() {
+    ocrTask?.cancel()
+    ocrTask = nil
+    guard let cgImage = state.image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return }
+    ocrTask = Task(priority: .utility) { [weak self] in
+      do {
+        let text = try await OCRService.shared.recognizeText(
+          from: cgImage,
+          preferredLanguageIdentifier: AppLanguageManager.shared.activeOCRLanguageIdentifier,
+          contentType: .interfaceText
+        )
+        guard !Task.isCancelled else { return }
+        self?.state.setOCRText(text)
+      } catch is CancellationError {
+        return
+      } catch OCRError.noTextFound {
+        return
+      } catch {
+        guard !Task.isCancelled else { return }
+        DiagnosticLogger.shared.logError(.ocr, error, "Pin window OCR failed")
+      }
+    }
   }
 
   private func handleUserClose() {
@@ -247,6 +309,7 @@ private final class QuickAccessPinWindowController {
 @MainActor
 private final class QuickAccessPinHostingView: NSHostingView<QuickAccessPinWindowView> {
   var onMagnify: ((CGFloat) -> Void)?
+  var menuProvider: (() -> NSMenu?)?
 
   private var lastMagnification: CGFloat = 0
 
@@ -258,6 +321,10 @@ private final class QuickAccessPinHostingView: NSHostingView<QuickAccessPinWindo
   required init?(coder: NSCoder) {
     super.init(coder: coder)
     setupGestureRecognizer()
+  }
+
+  override func menu(for event: NSEvent) -> NSMenu? {
+    menuProvider?() ?? super.menu(for: event)
   }
 
   private func setupGestureRecognizer() {

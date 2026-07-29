@@ -6938,6 +6938,16 @@ nonisolated enum L10n {
       defaultValue: "Fit",
       comment: "Pinned screenshot window zoom menu item that returns to fitted size"
     )
+    static let pinWindowCopyImage = string(
+      "quick-access.pin-window.copy-image",
+      defaultValue: "Copy Image",
+      comment: "Pinned screenshot window context menu item that copies the image to the clipboard"
+    )
+    static let pinWindowCopyText = string(
+      "quick-access.pin-window.copy-text",
+      defaultValue: "Copy Text",
+      comment: "Pinned screenshot window context menu item that copies the recognized text to the clipboard"
+    )
   }
 
   enum AnnotateContext {

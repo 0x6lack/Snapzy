@@ -56,6 +56,7 @@ Customization: `QuickAccessActionConfigurationStore` — context-menu order (`qu
 - `QuickAccessPinWindowManager` + `QuickAccessPinWindow` + `QuickAccessPinWindowState` — screenshots only, always-on-top.
 - Zoom: pinch + ⌘-scroll; factor clamped between min(0.4 floor, raised to minimum-interactive-size 240×180) and max(`min(2, screenLimit)`), i.e. ≤2x; zoom preset capsule menu.
 - Lock mode: click-through except the unlock button; image fades to 0.18 on hover. Esc closes when unlocked.
+- Right-click context menu (`QuickAccessPinContextMenuBuilder`): Copy Image is always available (copies the source file, falls back to the in-memory image if the file is gone); Copy Text appears only when the background OCR pass (`OCRService`, re-run on every pin content update) detected text in the image. Not reachable while locked — lock mode makes the window mouse-passthrough.
 - Drag-out handle (`QuickAccessPinDragHandleView`) re-exports the current rendered image to `Captures/PinDrags/` — saved edits included even while file write is in flight.
 - Closing unpins the QA item and restarts its countdown. Transient `pinScreenshot(url:)` supports pinning arbitrary files.
 

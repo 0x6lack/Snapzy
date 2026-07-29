@@ -19,6 +19,7 @@ final class QuickAccessPinWindowState: ObservableObject {
   @Published var isLocked = false
   @Published var isMouseInside = false
   @Published private(set) var zoomFactor: CGFloat = 1
+  @Published private(set) var ocrText: String?
 
   private(set) var baseSize: CGSize
   private(set) var maxSize: CGSize
@@ -88,7 +89,12 @@ final class QuickAccessPinWindowState: ObservableObject {
     self.url = url
     self.image = image
     self.thumbnail = thumbnail
+    ocrText = nil
     return updateSizing(baseSize: baseSize, maxSize: maxSize)
+  }
+
+  func setOCRText(_ text: String?) {
+    ocrText = text
   }
 
   func updateSizing(baseSize: CGSize, maxSize: CGSize) -> CGSize {
