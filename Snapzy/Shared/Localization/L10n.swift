@@ -679,6 +679,11 @@ nonisolated enum L10n {
       defaultValue: "Open History",
       comment: "Action title for opening capture history"
     )
+    static let pinClipboard = string(
+      "action.pin-clipboard",
+      defaultValue: "Pin Clipboard",
+      comment: "Action title for pinning clipboard content as a floating image"
+    )
   }
 
   enum Menu {
@@ -3205,6 +3210,11 @@ nonisolated enum L10n {
       "preferences-shortcuts.open-history-description",
       defaultValue: "Open the capture history browser",
       comment: "Description for open history shortcut"
+    )
+    static let pinClipboardDescription = string(
+      "preferences-shortcuts.pin-clipboard-description",
+      defaultValue: "Pin the latest clipboard image or text to the screen",
+      comment: "Description for pin clipboard shortcut"
     )
     static let quickAccessSection = string(
       "preferences-shortcuts.quick-access-section",

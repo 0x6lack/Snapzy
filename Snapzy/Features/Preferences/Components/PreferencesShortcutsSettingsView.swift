@@ -30,6 +30,7 @@ struct ShortcutsSettingsView: View {
   @State private var cloudUploadsShortcut: ShortcutConfig?
   @State private var shortcutListShortcut: ShortcutConfig?
   @State private var historyShortcut: ShortcutConfig?
+  @State private var pinClipboardShortcut: ShortcutConfig?
   @State private var openEditorShortcut: ShortcutConfig?
   @State private var openEditorShortcutEnabled: Bool
   @State private var copyAndCloseShortcut: ShortcutConfig?
@@ -88,6 +89,7 @@ struct ShortcutsSettingsView: View {
     _cloudUploadsShortcut = State(initialValue: KeyboardShortcutManager.shared.shortcut(for: .cloudUploads))
     _shortcutListShortcut = State(initialValue: KeyboardShortcutManager.shared.shortcut(for: .shortcutList))
     _historyShortcut = State(initialValue: KeyboardShortcutManager.shared.shortcut(for: .history))
+    _pinClipboardShortcut = State(initialValue: KeyboardShortcutManager.shared.shortcut(for: .pinClipboard))
     _openEditorShortcut = State(initialValue: QuickAccessManager.shared.openEditorShortcut)
     _openEditorShortcutEnabled = State(initialValue: QuickAccessManager.shared.openEditorShortcutEnabled)
     _copyAndCloseShortcut = State(initialValue: AnnotateShortcutManager.shared.copyAndCloseShortcut)
@@ -593,6 +595,17 @@ struct ShortcutsSettingsView: View {
           )
 
           ShortcutRecorderView(
+            label: L10n.Actions.pinClipboard,
+            icon: "doc.on.clipboard",
+            description: L10n.PreferencesShortcuts.pinClipboardDescription,
+            shortcut: $pinClipboardShortcut,
+            defaultShortcut: .defaultPinClipboard,
+            isEnabled: globalEnabledBinding(for: .pinClipboard),
+            validationIssue: globalValidationIssues[.pinClipboard],
+            onShortcutChanged: { handleGlobalShortcutChange($0, for: .pinClipboard) }
+          )
+
+          ShortcutRecorderView(
             label: L10n.PreferencesHistory.toggleModeShortcutTitle,
             icon: "arrow.left.and.right",
             description: L10n.PreferencesHistory.toggleModeShortcutDescription,
@@ -922,6 +935,12 @@ struct ShortcutsSettingsView: View {
     globalValidationIssues.removeValue(forKey: .history)
     manager.setHistoryShortcut(.defaultHistory)
 
+    pinClipboardShortcut = .defaultPinClipboard
+    globalShortcutEnabled[.pinClipboard] = true
+    manager.setShortcutEnabled(true, for: .pinClipboard)
+    globalValidationIssues.removeValue(forKey: .pinClipboard)
+    manager.setPinClipboardShortcut(.defaultPinClipboard)
+
     HistoryFloatingManager.shared.resetToggleModeShortcut()
 
     if refresh {
@@ -1133,6 +1152,9 @@ struct ShortcutsSettingsView: View {
       case .history:
         historyShortcut = config
         manager.setHistoryShortcut(config)
+      case .pinClipboard:
+        pinClipboardShortcut = config
+        manager.setPinClipboardShortcut(config)
       }
 
       if kind.isSystemConflictRelevant {

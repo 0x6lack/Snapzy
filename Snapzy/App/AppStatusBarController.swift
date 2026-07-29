@@ -617,6 +617,17 @@ final class AppStatusBarController: ObservableObject {
     historyItem.isEnabled = true
     menu?.addItem(historyItem)
 
+    let pinClipboardItem = NSMenuItem(
+      title: L10n.Actions.pinClipboard,
+      action: #selector(pinClipboardAction),
+      keyEquivalent: ""
+    )
+    applyConfiguredShortcut(pinClipboardItem, for: .pinClipboard, using: shortcutManager)
+    pinClipboardItem.target = self
+    pinClipboardItem.image = NSImage(systemSymbolName: "doc.on.clipboard", accessibilityDescription: nil)
+    pinClipboardItem.isEnabled = true
+    menu?.addItem(pinClipboardItem)
+
     let shortcutListItem = NSMenuItem(
       title: L10n.Menu.keyboardShortcuts,
       action: #selector(showShortcutListAction),
@@ -799,6 +810,11 @@ final class AppStatusBarController: ObservableObject {
   @objc private func openHistoryAction() {
     logMenuAction("openHistory")
     HistoryFloatingManager.shared.toggle()
+  }
+
+  @objc private func pinClipboardAction() {
+    logMenuAction("pinClipboard")
+    QuickAccessManager.shared.pinClipboard()
   }
 
   @objc private func showShortcutListAction() {

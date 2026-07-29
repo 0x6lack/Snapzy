@@ -388,6 +388,8 @@ final class ScreenCaptureViewModel: ObservableObject, KeyboardShortcutDelegate {
       ShortcutOverlayManager.shared.toggle()
     case .openHistory:
       HistoryFloatingManager.shared.toggle()
+    case .pinClipboard:
+      quickAccessManager.pinClipboard()
     }
   }
 

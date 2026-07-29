@@ -358,6 +358,8 @@ private extension KeyboardShortcutManager {
       setObjectCutoutShortcut(config)
     case .history:
       setHistoryShortcut(config)
+    case .pinClipboard:
+      setPinClipboardShortcut(config)
     }
   }
 }
